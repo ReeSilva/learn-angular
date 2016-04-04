@@ -1,0 +1,18 @@
+{
+  "name": "learn-angular",
+  "homepage": "https://github.com/ReeSilva/learn-angular",
+  "authors": [
+    "Renato Biancalana da Silva <renato.biancalana.silva@gmail.com>"
+  ],
+  "description": "A simple package created to learn how to develop with Angular",
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
