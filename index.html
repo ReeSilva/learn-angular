@@ -1,8 +1,17 @@
-<!DOCTYPE html>
+<html ng-app="learnAngular">
   <head>
-    <title>.:Learn Angular:.</title>
+    <title>Hello, world!</title>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script>
+      angular.module("learnAngular", []);
+      angular.module("learnAngular").controller("learnAngularCtrllr", function($scope) {
+        $scope.title = "Hello, world! I'm finally here, u can use me to learn Angular.";
+      });
+    </script>
   </head>
   <body>
-    <h1>Hello, world! I'm finally here, u can use me to learn Angular.</h1>
+    <h1 ng-controller="learnAngularCtrllr">
+      {{ title }}
+    </h1>
   </body>
 </html>
