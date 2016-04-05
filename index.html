@@ -1,17 +1,62 @@
-<html ng-app="learnAngular">
+<!DOCTYPE html>
   <head>
-    <title>Hello, world!</title>
+    <title>Yellow Pages</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen" charset="utf-8">
+    <style>
+      .jumbotron {
+        width: 400px;
+        text-align: center;
+        margin: 20px auto 0 auto;
+        padding: 20px;
+      }
+
+      .table {
+        margin-top: 20px;
+      }
+
+      .form-control {
+        margin-bottom: 5px;
+      }
+    </style>
     <script src="bower_components/angular/angular.min.js"></script>
     <script>
-      angular.module("learnAngular", []);
-      angular.module("learnAngular").controller("learnAngularCtrllr", function($scope) {
-        $scope.title = "Hello, world! I'm finally here, u can use me to learn Angular.";
+      angular.module("yellowPages", []);
+      angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope) {
+        $scope.app = "Yellow Pages";
+
+        $scope.contacts = [
+          {name: "Pedro",    phone: "999998888"},
+          {name: "Laercio",  phone: "999988888"},
+          {name: "Cristina", phone: "999888888"}
+        ];
+        $scope.addContact = function(contact) {
+          $scope.contacts.push(angular.copy(contact));
+          delete $scope.contact;
+        };
+
       });
     </script>
   </head>
-  <body>
-    <h1 ng-controller="learnAngularCtrllr">
-      {{ title }}
-    </h1>
+  <body ng-app="yellowPages" ng-controller="yellowPagesCtrllr">
+    <div class="jumbotron">
+      <h3>{{app}}</h3>
+
+      <table class="table table-striped">
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+        </tr>
+        <tr ng-repeat="contact in contacts">
+          <td>{{contact.name}}</td>
+          <td>{{contact.phone}}</td>
+        </tr>
+      </table>
+
+      <hr/>
+
+      <input class="form-control" type="text" ng-model="contact.name" placeholder="Type here your name"/>
+      <input class="form-control" type="text" ng-model="contact.phone" placeholder="Type here your phone"/>
+      <button class="btn btn-primary btn-block" ng-click="addContact(contact)">Add contact</button>
+    </div>
   </body>
 </html>
