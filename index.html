@@ -56,7 +56,7 @@
 
       <input class="form-control" type="text" ng-model="contact.name" placeholder="Type here your name"/>
       <input class="form-control" type="text" ng-model="contact.phone" placeholder="Type here your phone"/>
-      <button class="btn btn-primary btn-block" ng-click="addContact(contact)">Add contact</button>
+      <button class="btn btn-primary btn-block" ng-click="addContact(contact)" ng-disabled="!contact.name || !contact.phone">Add contact</button>
     </div>
   </body>
 </html>
