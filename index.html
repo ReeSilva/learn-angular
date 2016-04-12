@@ -17,21 +17,45 @@
       .form-control {
         margin-bottom: 5px;
       }
+
+      .selected {
+        background-color: yellow;
+      }
+
+      .bold {
+        font-weight: bold;
+      }
     </style>
     <script src="bower_components/angular/angular.min.js"></script>
     <script>
       angular.module("yellowPages", []);
       angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope) {
         $scope.app = "Yellow Pages";
-
         $scope.contacts = [
-          {name: "Pedro",    phone: "999998888"},
-          {name: "Laercio",  phone: "999988888"},
-          {name: "Cristina", phone: "999888888"}
+          {name: "Pedro",    phone: "999998888", color: "blue"},
+          {name: "Laercio",  phone: "999988888", color: "red"},
+          {name: "Cristina", phone: "999888888", color: "yellow"}
         ];
+        $scope.telecoms = [
+          {name: "Oi",    code: 14, cat: "Cell"},
+          {name: "Tim",   code: 41, cat: "Cell"},
+          {name: "Vivo",  code: 15, cat: "Home"},
+          {name: "Claro", code: 21, cat: "Cell"}
+        ]
+
         $scope.addContact = function(contact) {
           $scope.contacts.push(angular.copy(contact));
           delete $scope.contact;
+        };
+        $scope.delContacts = function(contacts) {
+          $scope.contacts = contacts.filter(function(contact) {
+            if (!contact.selected) return contact;
+          });
+        };
+        $scope.isContactSelected = function(contacts) {
+          return contacts.some(function(contact) {
+            return contact.selected;
+          });
         };
 
       });
@@ -41,14 +65,19 @@
     <div class="jumbotron">
       <h3>{{app}}</h3>
 
-      <table class="table table-striped">
+      <table ng-show="contacts.length > 0" class="table">
         <tr>
           <th>Name</th>
           <th>Phone</th>
+          <th>Telecom</th>
+          <th></th>
         </tr>
-        <tr ng-repeat="contact in contacts">
+        <tr ng-class="{'selected bold': contact.selected}" ng-repeat="contact in contacts">
+          <td><input type="checkbox" ng-model="contact.selected"/></td>
           <td>{{contact.name}}</td>
           <td>{{contact.phone}}</td>
+          <td>{{contact.telecom.name}}</td>
+          <td><div style="width: 20px; height: 20px;" ng-style="{'background-color': contact.color}"></div></td>
         </tr>
       </table>
 
@@ -56,7 +85,12 @@
 
       <input class="form-control" type="text" ng-model="contact.name" placeholder="Type here your name"/>
       <input class="form-control" type="text" ng-model="contact.phone" placeholder="Type here your phone"/>
+      <select class="form-control" ng-model="contact.telecom" ng-options="telecom.name for telecom in telecoms">
+        <option value="">Select a telecom</select>
+      </select>
       <button class="btn btn-primary btn-block" ng-click="addContact(contact)" ng-disabled="!contact.name || !contact.phone">Add contact</button>
+      <button class="btn btn-danger btn-block" ng-click="delContacts(contacts)" ng-disabled="!isContactSelected(contacts)">Erase contacts</button>
     </div>
+    <div ng-include="'footer.html'"></div>
   </body>
 </html>
