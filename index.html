@@ -1,5 +1,6 @@
 <!DOCTYPE html>
   <head>
+    <meta charset="utf-8">
     <title>Yellow Pages</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen" charset="utf-8">
     <style>
@@ -27,8 +28,9 @@
       }
     </style>
     <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.min.js"></script>
     <script>
-      angular.module("yellowPages", []);
+      angular.module("yellowPages", ["ngMessages"]);
       angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope) {
         $scope.app = "Yellow Pages";
         $scope.contacts = [
@@ -46,6 +48,7 @@
         $scope.addContact = function(contact) {
           $scope.contacts.push(angular.copy(contact));
           delete $scope.contact;
+          $scope.contactForm.$setPristine();
         };
         $scope.delContacts = function(contacts) {
           $scope.contacts = contacts.filter(function(contact) {
@@ -83,13 +86,35 @@
 
       <hr/>
 
-      <input class="form-control" type="text" ng-model="contact.name" placeholder="Type here your name"/>
-      <input class="form-control" type="text" ng-model="contact.phone" placeholder="Type here your phone"/>
-      <select class="form-control" ng-model="contact.telecom" ng-options="telecom.name for telecom in telecoms">
-        <option value="">Select a telecom</select>
-      </select>
-      <button class="btn btn-primary btn-block" ng-click="addContact(contact)" ng-disabled="!contact.name || !contact.phone">Add contact</button>
-      <button class="btn btn-danger btn-block" ng-click="delContacts(contacts)" ng-disabled="!isContactSelected(contacts)">Erase contacts</button>
+      <form name="contactForm">
+        <input class="form-control" type="text" ng-model="contact.name" name="name" placeholder="Type here your name" ng-required="true" ng-minlength="10"/>
+        <input class="form-control" type="text" ng-model="contact.phone" name="phone" placeholder="Type here your phone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
+        <select class="form-control" ng-model="contact.telecom" ng-options="telecom.name for telecom in telecoms">
+          <option value="">Select a telecom</select>
+        </select>
+      </form>
+
+      <div ng-messages="contactForm.name.$error" class="alert alert-danger">
+        <div ng-message="required">
+          Por favor, preencha o seu nome!
+        </div>
+
+        <div ng-message="minlength">
+          O campo nome pede no mínimo 10 caracteres!
+        </div>
+      </div>
+
+
+      <div ng-show="contactForm.phone.$error.required && contactForm.phone.$dirty" class="alert alert-danger">
+        Por favor, preencha o seu telefone!
+      </div>
+
+      <div ng-show="contactForm.phone.$error.pattern" class="alert alert-danger">
+        O telefone deve atender ao formato [X]XXXX-XXXX!
+      </div>
+
+      <button class="btn btn-primary btn-block" ng-click="addContact(contact)" ng-disabled="contactForm.$invalid">Add contact</button>
+      <button class="btn btn-danger btn-block" ng-click="delContacts(contacts)" ng-if="isContactSelected(contacts)">Erase contacts</button>
     </div>
     <div ng-include="'footer.html'"></div>
   </body>
