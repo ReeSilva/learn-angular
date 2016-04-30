@@ -32,24 +32,34 @@
     <script src="bower_components/angular-messages/angular-messages.min.js"></script>
     <script>
       angular.module("yellowPages", ["ngMessages"]);
-      angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope) {
+      angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope, $http) {
         $scope.app = "Yellow Pages";
-        $scope.contacts = [
-          {name: "Pedro",    phone: "99988-8888", date: new Date(), color: "blue",   telecom: {name: "Oi",   code: 14, cat: "Cell"}},
-          {name: "Laercio",  phone: "99998-8888", date: new Date(), color: "red",    telecom: {name: "Tim",  code: 41, cat: "Cell"}},
-          {name: "Cristina", phone: "99999-8888", date: new Date(), color: "yellow", telecom: {name: "Vivo", code: 15, cat: "Home"}}
-        ];
-        $scope.telecoms = [
-          {name: "Oi",    code: 14, cat: "Cell", price: 2},
-          {name: "Tim",   code: 41, cat: "Cell", price: 1},
-          {name: "Vivo",  code: 15, cat: "Home", price: 0.50},
-          {name: "Claro", code: 21, cat: "Cell", price: 2.20}
-        ]
+
+        $scope.contacts = [];
+        $scope.telecoms = [];
+
+        var loadContacts = function() {
+          $http.get("http://172.17.0.1:32780/contacts").success(function(data, status){
+            $scope.contacts = data;
+          });
+        };
+
+        var loadTelecoms = function() {
+          $http.get("http://172.17.0.1:32780/telecoms").success(function(data, status){
+            $scope.telecoms = data;
+          });
+        };
 
         $scope.addContact = function(contact) {
-          $scope.contacts.push(angular.copy(contact));
-          delete $scope.contact;
-          $scope.contactForm.$setPristine();
+          contact.date = new Date();
+
+          $http.post("http://172.17.0.1:32780/contacts", contact).success(function(data) {
+            delete $scope.contact;
+            $scope.contactForm.$setPristine();
+            loadContacts();
+          }).error(function(data, status){
+            $scope.message = "Aconteceu um problema: " + data;
+          });
         };
         $scope.delContacts = function(contacts) {
           $scope.contacts = contacts.filter(function(contact) {
@@ -66,13 +76,16 @@
           $scope.orderDirection = !$scope.orderDirection;
         };
 
+        loadContacts();
+        loadTelecoms();
+
       });
     </script>
   </head>
   <body ng-app="yellowPages" ng-controller="yellowPagesCtrllr">
     <div class="jumbotron">
       <h3>{{app}}</h3>
-
+      {{message}}
       <input type="text" class="form-control" ng-model="searchCriteria" placeholder="O que você está buscando?"/>
 
       <table ng-show="contacts.length > 0" class="table table-striped">
