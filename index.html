@@ -3,84 +3,12 @@
     <meta charset="utf-8">
     <title>Yellow Pages</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen" charset="utf-8">
-    <style>
-      .jumbotron {
-        width: 600px;
-        text-align: center;
-        margin: 20px auto 0 auto;
-        padding: 20px;
-      }
-
-      .table {
-        margin-top: 20px;
-      }
-
-      .form-control {
-        margin-bottom: 5px;
-      }
-
-      .selected {
-        background-color: yellow;
-      }
-
-      .bold {
-        font-weight: bold;
-      }
-    </style>
+    <link rel="stylesheet" href="css/app.css" media="screen" charset="utf-8">
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="i18n/angular-locale_pt-br.js"></script>
     <script src="bower_components/angular-messages/angular-messages.min.js"></script>
-    <script>
-      angular.module("yellowPages", ["ngMessages"]);
-      angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope, $http) {
-        $scope.app = "Yellow Pages";
-
-        $scope.contacts = [];
-        $scope.telecoms = [];
-
-        var loadContacts = function() {
-          $http.get("http://172.17.0.1:32780/contacts").success(function(data, status){
-            $scope.contacts = data;
-          });
-        };
-
-        var loadTelecoms = function() {
-          $http.get("http://172.17.0.1:32780/telecoms").success(function(data, status){
-            $scope.telecoms = data;
-          });
-        };
-
-        $scope.addContact = function(contact) {
-          contact.date = new Date();
-
-          $http.post("http://172.17.0.1:32780/contacts", contact).success(function(data) {
-            delete $scope.contact;
-            $scope.contactForm.$setPristine();
-            loadContacts();
-          }).error(function(data, status){
-            $scope.message = "Aconteceu um problema: " + data;
-          });
-        };
-        $scope.delContacts = function(contacts) {
-          $scope.contacts = contacts.filter(function(contact) {
-            if (!contact.selected) return contact;
-          });
-        };
-        $scope.isContactSelected = function(contacts) {
-          return contacts.some(function(contact) {
-            return contact.selected;
-          });
-        };
-        $scope.orderBy = function (field) {
-          $scope.orderCriteria = field;
-          $scope.orderDirection = !$scope.orderDirection;
-        };
-
-        loadContacts();
-        loadTelecoms();
-
-      });
-    </script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers/yellowPagesCtrllr.js"></script>
   </head>
   <body ng-app="yellowPages" ng-controller="yellowPagesCtrllr">
     <div class="jumbotron">
@@ -139,6 +67,6 @@
       <button class="btn btn-primary btn-block" ng-click="addContact(contact)" ng-disabled="contactForm.$invalid">Add contact</button>
       <button class="btn btn-danger btn-block" ng-click="delContacts(contacts)" ng-if="isContactSelected(contacts)">Erase contacts</button>
     </div>
-    <div ng-include="'footer.html'"></div>
+    <div ng-include="'views/footer.html'"></div>
   </body>
 </html>
