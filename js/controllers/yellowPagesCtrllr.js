@@ -1,30 +1,30 @@
-angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope, $http) {
+angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope, contactsAPI, telecomsAPI, serialGenerator) {
   $scope.app = "Yellow Pages";
 
   $scope.contacts = [];
   $scope.telecoms = [];
-
+  console.log(serialGenerator.generate());
   var loadContacts = function() {
-    $http.get("http://172.17.0.1:32780/contacts").success(function(data, status){
+    contactsAPI.getContacts().success(function(data, status){
       $scope.contacts = data;
+    }).error(function(data, status){
+      $scope.message = "Aconteceu um problema: " + data;
     });
   };
 
   var loadTelecoms = function() {
-    $http.get("http://172.17.0.1:32780/telecoms").success(function(data, status){
+    telecomsAPI.getTelecoms().success(function(data, status){
       $scope.telecoms = data;
     });
   };
 
   $scope.addContact = function(contact) {
     contact.date = new Date();
-
-    $http.post("http://172.17.0.1:32780/contacts", contact).success(function(data) {
+    contact.serial = serialGenerator.generate();
+    contactsAPI.saveContact(contact).success(function(data) {
       delete $scope.contact;
       $scope.contactForm.$setPristine();
       loadContacts();
-    }).error(function(data, status){
-      $scope.message = "Aconteceu um problema: " + data;
     });
   };
   $scope.delContacts = function(contacts) {

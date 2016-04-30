@@ -9,6 +9,10 @@
   margin-top: 20px;
 }
 
+.table tr {
+  text-align: left;
+}
+
 .form-control {
   margin-bottom: 5px;
 }
