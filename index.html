@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen" charset="utf-8">
     <style>
       .jumbotron {
-        width: 400px;
+        width: 600px;
         text-align: center;
         margin: 20px auto 0 auto;
         padding: 20px;
@@ -28,21 +28,22 @@
       }
     </style>
     <script src="bower_components/angular/angular.min.js"></script>
+    <script src="i18n/angular-locale_pt-br.js"></script>
     <script src="bower_components/angular-messages/angular-messages.min.js"></script>
     <script>
       angular.module("yellowPages", ["ngMessages"]);
       angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope) {
         $scope.app = "Yellow Pages";
         $scope.contacts = [
-          {name: "Pedro",    phone: "999998888", color: "blue"},
-          {name: "Laercio",  phone: "999988888", color: "red"},
-          {name: "Cristina", phone: "999888888", color: "yellow"}
+          {name: "Pedro",    phone: "99988-8888", date: new Date(), color: "blue",   telecom: {name: "Oi",   code: 14, cat: "Cell"}},
+          {name: "Laercio",  phone: "99998-8888", date: new Date(), color: "red",    telecom: {name: "Tim",  code: 41, cat: "Cell"}},
+          {name: "Cristina", phone: "99999-8888", date: new Date(), color: "yellow", telecom: {name: "Vivo", code: 15, cat: "Home"}}
         ];
         $scope.telecoms = [
-          {name: "Oi",    code: 14, cat: "Cell"},
-          {name: "Tim",   code: 41, cat: "Cell"},
-          {name: "Vivo",  code: 15, cat: "Home"},
-          {name: "Claro", code: 21, cat: "Cell"}
+          {name: "Oi",    code: 14, cat: "Cell", price: 2},
+          {name: "Tim",   code: 41, cat: "Cell", price: 1},
+          {name: "Vivo",  code: 15, cat: "Home", price: 0.50},
+          {name: "Claro", code: 21, cat: "Cell", price: 2.20}
         ]
 
         $scope.addContact = function(contact) {
@@ -60,6 +61,10 @@
             return contact.selected;
           });
         };
+        $scope.orderBy = function (field) {
+          $scope.orderCriteria = field;
+          $scope.orderDirection = !$scope.orderDirection;
+        };
 
       });
     </script>
@@ -68,18 +73,23 @@
     <div class="jumbotron">
       <h3>{{app}}</h3>
 
-      <table ng-show="contacts.length > 0" class="table">
+      <input type="text" class="form-control" ng-model="searchCriteria" placeholder="O que você está buscando?"/>
+
+      <table ng-show="contacts.length > 0" class="table table-striped">
         <tr>
-          <th>Name</th>
-          <th>Phone</th>
+          <th></th>
+          <th><a href="" ng-click="orderBy('name')">Name</a></th>
+          <th><a href="" ng-click="orderBy('phone')">Phone</a></th>
+          <th>Date</th>
           <th>Telecom</th>
           <th></th>
         </tr>
-        <tr ng-class="{'selected bold': contact.selected}" ng-repeat="contact in contacts">
+        <tr ng-class="{'selected bold': contact.selected}" ng-repeat="contact in contacts | filter:{name: searchCriteria} | orderBy:orderCriteria:orderDirection">
           <td><input type="checkbox" ng-model="contact.selected"/></td>
-          <td>{{contact.name}}</td>
+          <td>{{contact.name | uppercase}}</td>
           <td>{{contact.phone}}</td>
-          <td>{{contact.telecom.name}}</td>
+          <td>{{contact.date | date:"dd/MM/yyyy HH:mm"}}</td>
+          <td>{{contact.telecom.name | lowercase}}</td>
           <td><div style="width: 20px; height: 20px;" ng-style="{'background-color': contact.color}"></div></td>
         </tr>
       </table>
@@ -89,7 +99,7 @@
       <form name="contactForm">
         <input class="form-control" type="text" ng-model="contact.name" name="name" placeholder="Type here your name" ng-required="true" ng-minlength="10"/>
         <input class="form-control" type="text" ng-model="contact.phone" name="phone" placeholder="Type here your phone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
-        <select class="form-control" ng-model="contact.telecom" ng-options="telecom.name for telecom in telecoms">
+        <select class="form-control" ng-model="contact.telecom" ng-options="telecom.name + ' (' + (telecom.price | currency)  + ') ' for telecom in telecoms | orderBy:'name'">
           <option value="">Select a telecom</select>
         </select>
       </form>
