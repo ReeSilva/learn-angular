@@ -4,17 +4,31 @@
     <title>Yellow Pages</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen" charset="utf-8">
     <link rel="stylesheet" href="css/app.css" media="screen" charset="utf-8">
+
+    <!-- Libs -->
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="i18n/angular-locale_pt-br.js"></script>
     <script src="bower_components/angular-messages/angular-messages.min.js"></script>
 
     <script src="js/app.js"></script>
+
+    <!-- Controllers -->
     <script src="js/controllers/yellowPagesCtrllr.js"></script>
+
+    <!-- Services -->
     <script src="js/services/contactsAPIService.js"></script>
     <script src="js/services/telecomsAPIService.js"></script>
     <script src="js/services/serialGeneratorService.js"></script>
+
+    <!-- Configs -->
     <script src="js/config/serialGeneratorConfig.js"></script>
+
+    <!-- Values -->
     <script src="js/values/configValue.js"></script>
+
+    <!-- Filters -->
+    <script src="js/filters/nameFilter.js"></script>
+    <script src="js/filters/ellipsisFilter.js"></script>
   </head>
   <body ng-app="yellowPages" ng-controller="yellowPagesCtrllr">
     <div class="jumbotron">
@@ -35,7 +49,7 @@
         <tr ng-class="{'selected bold': contact.selected}" ng-repeat="contact in contacts | filter:{name: searchCriteria} | orderBy:orderCriteria:orderDirection">
           <td><input type="checkbox" ng-model="contact.selected"/></td>
           <td>{{contact.serial}}</td>
-          <td>{{contact.name}}</td>
+          <td>{{contact.name | name | ellipsis:8}}</td>
           <td>{{contact.phone}}</td>
           <td>{{contact.date | date:"dd/MM/yyyy HH:mm"}}</td>
           <td>{{contact.telecom.name}}</td>

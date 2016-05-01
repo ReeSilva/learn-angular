@@ -3,7 +3,7 @@ angular.module("yellowPages").controller("yellowPagesCtrllr", function($scope, c
 
   $scope.contacts = [];
   $scope.telecoms = [];
-  console.log(serialGenerator.generate());
+  
   var loadContacts = function() {
     contactsAPI.getContacts().success(function(data, status){
       $scope.contacts = data;

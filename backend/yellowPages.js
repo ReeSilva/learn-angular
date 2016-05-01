@@ -6,9 +6,9 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 
 var contacts = [
-	{name: "Bruno",   phone: "9999-2222", date: new Date(), telecom: {name: "Oi",   code: 14, cat: "Mobile", price: 2.20}},
-	{name: "Sandra",  phone: "9999-3333", date: new Date(), telecom: {name: "Vivo", code: 15, cat: "Mobile", price: 1}},
-	{name: "Mariana", phone: "9999-9999", date: new Date(), telecom: {name: "Tim",  code: 41, cat: "Mobile", price: 3.50}}
+	{name: "bruno da silva",   phone: "9999-2222", date: new Date(), telecom: {name: "Oi",   code: 14, cat: "Mobile", price: 2.20}},
+	{name: "SANDRA MARIA",  phone: "9999-3333", date: new Date(), telecom: {name: "Vivo", code: 15, cat: "Mobile", price: 1}},
+	{name: "Mariana De Oliveira", phone: "9999-9999", date: new Date(), telecom: {name: "Tim",  code: 41, cat: "Mobile", price: 3.50}}
 ];
 var telecoms = [
 	{name: "Oi",       code: 14, cat: "Mobile", price: 2.20},
